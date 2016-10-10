@@ -1,0 +1,26 @@
+version: '2'
+services:
+ db:
+   image: mysql:5.7
+   volumes:
+     - "./.data/db:/var/lib/mysql"
+   restart: always
+   environment:
+     MYSQL_ROOT_PASSWORD: sonar
+     MYSQL_DATABASE: sonar
+     MYSQL_USER: sonar
+     MYSQL_PASSWORD: sonar
+
+ sonar:
+   depends_on:
+     - db
+   image: sonarqube:6.0-alpine
+   links:
+     - db
+   ports:
+     - "9000:9000"
+   restart: always
+   environment:
+     SONARQUBE_JDBC_URL: jdbc:mysql://db/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
+     SONARQUBE_JDBC_USERNAME: sonar
+     SONARQUBE_JDBC_PASSWORD: sonar
